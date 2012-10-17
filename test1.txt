@@ -1,0 +1,175 @@
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+struct process_type
+{
+	int pcbid;
+	int priorityNum;
+	int daxiao;
+	char xiaoxi[100];
+};
+struct process_type zhucun[20];
+
+int shumu=0;
+int pcbid_1=-1;
+
+void create()
+{
+	if(shumu>=20)
+	{
+		printf("\n 内存已满，请先结束或换出进程");
+	}
+	else
+	{
+		printf("请输入新进程的pcbid:");
+		scanf("%d", &zhucun[shumu].pcbid);
+		printf("请输入新进程的优先级:");
+		scanf("%d", &zhucun[shumu].priorityNum);
+		printf("请输入新进程的大小:");
+		scanf("%d", &zhucun[shumu].daxiao);
+		printf("请输入新进程的消息:");
+		scanf("%s", &zhucun[shumu].xiaoxi);
+	    shumu++;
+		if(shumu==1)
+		{
+			pcbid_1=0;
+
+		}
+	}
+}
+void clrscr()
+{
+	system("cls");
+}
+void run()
+{
+	if(shumu==0)
+	{
+		printf("当前没有进程运行\n");
+		
+	}
+	else
+	{
+		printf("当前运行进程的情况为\n");
+		printf("\t pcbid: %d\n",zhucun[pcbid_1].pcbid);
+		printf("\t 优先级: %d\n",zhucun[pcbid_1].priorityNum);
+		printf("\t 大小: %d\n",zhucun[pcbid_1].daxiao);
+		printf("\t 消息: %s\n",zhucun[pcbid_1].xiaoxi);
+	}
+}
+void kill()
+{
+	int i;
+	if(shumu==0)
+		printf("当前没有进程运行\n");
+
+	else
+	{
+		for(i=shumu-1;i>pcbid_1;i--)
+		{
+			zhucun[i-1].pcbid=zhucun[i].pcbid;
+			zhucun[i-1].priorityNum=zhucun[i].priorityNum;
+			zhucun[i-1].daxiao=zhucun[i].daxiao;
+			strcpy(zhucun[i-1].xiaoxi,zhucun[i].xiaoxi);
+		}
+		shumu--;
+	}
+}
+
+int xunzhao(int pcbid)
+{
+	int i;
+	for(i=0;i<shumu;i++)
+	{
+		if(zhucun[i].pcbid==pcbid)
+			return i;
+
+	}
+	return -1;
+}
+
+void tongxun()
+{
+	int fasong;
+	int	jieshou;
+	int i,j;
+	printf("请输入发送消息的进程编号：");
+	scanf("%d",&fasong);
+	if((i=xunzhao(fasong))==-1)
+	{
+		printf("该进程编号不存在\n");
+		return;
+	}
+	printf("请输入接收信息的进程编号:");
+	scanf("%d",&jieshou);
+	if((j=xunzhao(jieshou))==-1)
+	{
+		printf("该进程编号不存在\n");
+		return;
+
+	}
+	strcpy(zhucun[j].xiaoxi,zhucun[i].xiaoxi);
+
+}
+void chakan()
+{
+	int i;
+	if(shumu==0)
+	{
+		printf("当前没有进程运行\n");
+
+	}
+	else
+	{
+		printf("pcbid    优先级    大小    消息\n");
+
+		for (i=0;i<shumu;i++)
+		{
+			printf("%-8d",zhucun[i].pcbid);
+			printf("%-10d",zhucun[i].priorityNum);
+			printf("%-9d",zhucun[i].daxiao);
+			printf("%s",zhucun[i].xiaoxi);
+			printf("\n");
+		}
+	}
+}
+void ShowMenu()
+{
+	printf("\n            进程演示系统\n");
+	printf("    1.创建新的进程     2.查看运行进程\n");
+	printf("    3.查看所有进程     4.终止运行进程\n");
+	printf("    5.进程之间通信     6.退出系统\n");
+    printf("请选择(1~6):");
+}
+
+int main()
+{
+	char c;
+	clrscr();
+	while(1)
+	{
+		ShowMenu();
+		fflush(stdin);
+		c=getchar();
+		switch(c)
+		{
+		case '1':
+			create();
+			break;
+		case '2':
+			run();
+			break;
+		case '3':
+			chakan();
+			break;
+		case '4':
+			kill();
+			break;
+		case '5':
+			tongxun();
+			break;
+		case '6':
+			exit(0);
+		}
+	}
+}
